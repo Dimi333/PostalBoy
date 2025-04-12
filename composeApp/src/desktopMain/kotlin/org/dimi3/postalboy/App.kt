@@ -29,7 +29,6 @@ fun App() {
         var apiResponse by remember { mutableStateOf("Čakám...") }
         val scope = rememberCoroutineScope()
         var text by remember { mutableStateOf("") }
-        var text2 by remember { mutableStateOf("") }
 
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             Button(onClick = { showContent = !showContent }) {
@@ -39,24 +38,20 @@ fun App() {
             TextField(
                 value = text,
                 onValueChange = { text = it },
-                label = { Text("Host: jsonplaceholder.typicode.com") },
-            )
-
-            TextField(
-                value = text2,
-                onValueChange = { text2 = it },
-                label = { Text("Path: todos/1") }
+                label = { Text("Host: https://jsonplaceholder.typicode.com/todos/1") },
             )
 
             Spacer(modifier = Modifier.height(12.dp))
             Button(onClick = {
                 scope.launch {
-                    apiResponse = ApiService().fetchData(text, text2)
+                    apiResponse = ApiService().fetchData(text)
                 }
             }) {
                 Text("Click me!")
             }
+
             Spacer(modifier = Modifier.height(12.dp))
+
             Text(text = apiResponse)
 
             AnimatedVisibility(showContent) {

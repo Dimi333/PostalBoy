@@ -23,12 +23,14 @@ public class ApiService {
         }
     }
 
-    suspend fun fetchData(url: String, path: String): String {
+    suspend fun fetchData(url: String): String {
+        val uri = parseUrl(url)
+
         val result = httpClient.get {
             url {
-                protocol = URLProtocol.HTTPS
-                host = url
-                path(path)
+                protocol = (uri?.protocol ?: "https") as URLProtocol
+                host = uri?.host.orEmpty()
+                path(uri?.fullPath.orEmpty())
             }
         }
 
