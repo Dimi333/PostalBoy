@@ -40,8 +40,36 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
+fun Status(status: String) {
+
+}
+
+@Composable
 @Preview
 fun App() {
+    val tabs = listOf("Tab", "+")
+    var selectedTabIndex2 by remember { mutableStateOf(0) }
+    var tabIndex2 by remember { mutableStateOf(0) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        TabRow(selectedTabIndex2) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    text = { Text(title, fontSize = 12.sp) },
+                    selected = tabIndex2 == index,
+                    onClick = { tabIndex2 = index; selectedTabIndex2 = index },
+                )
+            }
+        }
+        when (tabIndex2) {
+            0 -> CallTab()
+            1 -> CallTab()
+        }
+    }
+}
+
+@Composable
+fun CallTab() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         var apiResponse by remember { mutableStateOf(ApiResponse.Initial) }
@@ -62,7 +90,7 @@ fun App() {
         var selectedResponseTabIndex by remember { mutableStateOf(0) }
         val scroll = rememberScrollState(0)
 
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.fillMaxWidth().padding(0.dp, 40.dp, 0.dp, 0.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth().padding(2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Box {
                     Button(onClick = { expandedEnvironment = !expandedEnvironment }) {
@@ -133,6 +161,7 @@ fun App() {
                     value = url,
                     onValueChange = { url = it },
                     label = { Text("Host: https://jsonplaceholder.typicode.com/todos/1") },
+                    textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
                 )
 
                 Button(onClick = {
@@ -145,7 +174,7 @@ fun App() {
                         }
                     }
                 }) {
-                    Text("Call API")
+                    Text("Go")
                 }
 
                 CircularProgressIndicator(modifier = Modifier.alpha(if (visiblePreloader) 1f else 0f))
@@ -156,9 +185,9 @@ fun App() {
                     TabRow(selectedTabIndex) {
                         tabs.forEachIndexed { index, title ->
                             Tab(
-                                text = { Text(title) },
+                                text = { Text(title, fontSize = 12.sp) },
                                 selected = tabIndex == index,
-                                onClick = { tabIndex = index; selectedTabIndex = index }
+                                onClick = { tabIndex = index; selectedTabIndex = index },
                             )
                         }
                     }
@@ -169,6 +198,7 @@ fun App() {
                             label = { Text("Bearer") },
                             modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 100.dp)
                                 .padding(horizontal = 16.dp),
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
                         )
 
                         1 -> TextField(
@@ -178,6 +208,7 @@ fun App() {
                             modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 100.dp)
                                 .padding(horizontal = 16.dp),
                             singleLine = false,
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
                         )
 
                         2 -> TextField(
@@ -186,6 +217,7 @@ fun App() {
                             label = { Text("Body") },
                             modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 100.dp)
                                 .padding(horizontal = 16.dp),
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
                         )
                     }
                 }
@@ -198,7 +230,7 @@ fun App() {
                     TabRow(selectedResponseTabIndex, backgroundColor = MaterialTheme.colors.primaryVariant) {
                         responseTabs.forEachIndexed { index, title ->
                             Tab(
-                                text = { Text(title) },
+                                text = { Text(title, fontSize = 12.sp) },
                                 selected = responseTabIndex == index,
                                 onClick = { responseTabIndex = index; selectedResponseTabIndex = index }
                             )
@@ -208,12 +240,17 @@ fun App() {
                         0 -> Row(Modifier.border(1.dp, MaterialTheme.colors.primary).fillMaxSize().padding(16.dp)) {
                             Column {
                                 Row {
-                                    Text(text = "Status: " + apiResponse.status.toString())
+                                    Text(text = "Status: " + apiResponse.status.toString(), fontSize = 12.sp)
                                 }
                                 Row {
-                                    Box (modifier = Modifier.fillMaxSize()) {
+                                    Box(modifier = Modifier.fillMaxSize()) {
                                         SelectionContainer {
-                                            Text(text = apiResponse.body, modifier = Modifier.verticalScroll(scroll), fontSize = 12.sp, lineHeight = 15.sp)
+                                            Text(
+                                                text = apiResponse.body,
+                                                modifier = Modifier.verticalScroll(scroll),
+                                                fontSize = 12.sp,
+                                                lineHeight = 15.sp
+                                            )
                                         }
 
                                         VerticalScrollbar(
@@ -225,9 +262,9 @@ fun App() {
                             }
                         }
 
-                        2 -> Row {
+                        1 -> Row {
                             apiResponse.headers.forEach { (key, value) ->
-                                Text("$key: ${value.joinToString(", ")}")
+                                Text("$key: ${value.joinToString(", ")}", fontSize = 12.sp)
                             }
                         }
                     }
