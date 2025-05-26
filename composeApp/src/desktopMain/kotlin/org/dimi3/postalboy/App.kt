@@ -206,15 +206,18 @@ fun App() {
                             Column {
                                 Row {
                                     Text(text = "Status: " + apiResponse.status.toString())
-                                    SelectionContainer {
-                                        Text(text = apiResponse.body, modifier = Modifier.verticalScroll(scroll))
-                                    }
+                                }
+                                Row {
+                                    Box (modifier = Modifier.fillMaxSize()) {
+                                        SelectionContainer {
+                                            Text(text = apiResponse.body, modifier = Modifier.verticalScroll(scroll))
+                                        }
 
-                                    VerticalScrollbar(
-                                        modifier = Modifier.align(Alignment.CenterVertically)
-                                            .fillMaxHeight(),
-                                        adapter = rememberScrollbarAdapter(scroll)
-                                    )
+                                        VerticalScrollbar(
+                                            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+                                            adapter = rememberScrollbarAdapter(scroll)
+                                        )
+                                    }
                                 }
                             }
                         }
