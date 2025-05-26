@@ -2,6 +2,7 @@ package org.dimi3.postalboy
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +33,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -51,7 +54,7 @@ fun App() {
         var method by remember { mutableStateOf("GET") }
         var environment by remember { mutableStateOf("No environment") }
         val tabs = listOf("Authorization", "Headers", "Body")
-        val responseTabs = listOf("Body", "Cookies", "Headers")
+        val responseTabs = listOf("Body", "Headers")
         var tabIndex by remember { mutableStateOf(0) }
         var responseTabIndex by remember { mutableStateOf(0) }
         var visiblePreloader by remember { mutableStateOf(false) }
@@ -60,7 +63,7 @@ fun App() {
         val scroll = rememberScrollState(0)
 
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(Modifier.fillMaxWidth().padding(2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Box {
                     Button(onClick = { expandedEnvironment = !expandedEnvironment }) {
                         Text(environment)
@@ -148,7 +151,7 @@ fun App() {
                 CircularProgressIndicator(modifier = Modifier.alpha(if (visiblePreloader) 1f else 0f))
             }
 
-            Row {
+            Row(modifier = Modifier.padding(2.dp)) {
                 Column {
                     TabRow(selectedTabIndex) {
                         tabs.forEachIndexed { index, title ->
@@ -190,7 +193,7 @@ fun App() {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Row {
+            Row(modifier = Modifier.padding(2.dp).background(Color.White)) {
                 Column {
                     TabRow(selectedResponseTabIndex, backgroundColor = MaterialTheme.colors.primaryVariant) {
                         responseTabs.forEachIndexed { index, title ->
@@ -210,7 +213,7 @@ fun App() {
                                 Row {
                                     Box (modifier = Modifier.fillMaxSize()) {
                                         SelectionContainer {
-                                            Text(text = apiResponse.body, modifier = Modifier.verticalScroll(scroll))
+                                            Text(text = apiResponse.body, modifier = Modifier.verticalScroll(scroll), fontSize = 12.sp, lineHeight = 15.sp)
                                         }
 
                                         VerticalScrollbar(
@@ -221,8 +224,6 @@ fun App() {
                                 }
                             }
                         }
-
-                        1 -> Unit
 
                         2 -> Row {
                             apiResponse.headers.forEach { (key, value) ->
