@@ -10,7 +10,6 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "PostalBoy",
-        alwaysOnTop = true,
         state = WindowState(width = 1600.dp, height = 1000.dp),
     ) {
         App()
