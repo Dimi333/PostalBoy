@@ -32,7 +32,7 @@ class ApiService {
         httpBuilder.host = uri.host
         httpBuilder.method = HttpMethod.parse(method)
         httpBuilder.url.path(uri.fullPath)
-        httpBuilder.url.protocol = (uri.protocol ?: "https") as URLProtocol
+        httpBuilder.url.protocol = uri.protocol
 
         if (bearer.isNotEmpty()) {
             httpBuilder.headers.append("Authorization", "Bearer $bearer")

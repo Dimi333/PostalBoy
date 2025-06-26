@@ -1,10 +1,8 @@
 package org.dimi3.postalboy
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,11 +38,6 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun Status(status: String) {
-
-}
-
-@Composable
 @Preview
 fun App() {
     val tabs = listOf("Tab", "+")
@@ -71,7 +64,6 @@ fun App() {
 @Composable
 fun CallTab() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
         var apiResponse by remember { mutableStateOf(ApiResponse.Initial) }
         val scope = rememberCoroutineScope()
         var url by remember { mutableStateOf("https://jsonplaceholder.typicode.com/todos/1") }
@@ -90,7 +82,10 @@ fun CallTab() {
         var selectedResponseTabIndex by remember { mutableStateOf(0) }
         val scroll = rememberScrollState(0)
 
-        Column(Modifier.fillMaxWidth().padding(0.dp, 40.dp, 0.dp, 0.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.fillMaxWidth().padding(0.dp, 40.dp, 0.dp, 0.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Row(Modifier.fillMaxWidth().padding(2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Box {
                     Button(onClick = { expandedEnvironment = !expandedEnvironment }) {
@@ -270,22 +265,6 @@ fun CallTab() {
                     }
                 }
             }
-
-
-//            Row {
-//                Button(onClick = { showContent = !showContent }) {
-//                    Text("Click me!")
-//                }
-//
-//                AnimatedVisibility(showContent) {
-//                    val greeting = remember { Greeting().greet() }
-//
-//                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//                        Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                        Text("Compose: $greeting")
-//                    }
-//                }
-//            }
         }
     }
 }
