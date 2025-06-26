@@ -29,6 +29,7 @@ kotlin {
             implementation("io.github.vooft:compose-treeview-core:0.2.1")
             implementation(libs.ktor.serialization.kotlinx.jsn)
             implementation(libs.ktor.client.content.negotiation)
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

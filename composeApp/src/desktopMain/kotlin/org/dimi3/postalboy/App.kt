@@ -36,12 +36,18 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import io.github.vooft.compose.treeview.core.TreeView
 import io.github.vooft.compose.treeview.core.node.Branch
 import io.github.vooft.compose.treeview.core.node.Leaf
 import io.github.vooft.compose.treeview.core.tree.Tree
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 @Composable
 fun TreeViewExample() {
@@ -100,12 +106,28 @@ fun App() {
     }
 }
 
+data class TabUiState(
+    val url: String = "",
+)
+
+class TabViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(TabUiState(url = "https://jsonplaceholder.typicode.com/todos/1"))
+    val uiState: StateFlow<TabUiState> = _uiState.asStateFlow()
+
+    fun updateUrl(value: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                url = value,
+            )
+        }
+    }
+}
+
 @Composable
-fun CallTab() {
+fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
     MaterialTheme {
         var apiResponse by remember { mutableStateOf(ApiResponse.Initial) }
         val scope = rememberCoroutineScope()
-        var url by remember { mutableStateOf("https://jsonplaceholder.typicode.com/todos/1") }
         var attrs by remember { mutableStateOf("") }
         var bearer by remember { mutableStateOf("") }
         var expanded by remember { mutableStateOf(false) }
@@ -120,6 +142,8 @@ fun CallTab() {
         var selectedTabIndex by remember { mutableStateOf(0) }
         var selectedResponseTabIndex by remember { mutableStateOf(0) }
         val scroll = rememberScrollState(0)
+        val uiState by viewModel.uiState.collectAsState()
+
 
         Column(
             Modifier.fillMaxWidth().padding(0.dp, 40.dp, 0.dp, 0.dp),
@@ -177,8 +201,8 @@ fun CallTab() {
 
                 TextField(
                     modifier = Modifier.weight(1f),
-                    value = url,
-                    onValueChange = { url = it },
+                    value = uiState.url,
+                    onValueChange = { viewModel.updateUrl(it)},
                     label = { Text("Host: https://jsonplaceholder.typicode.com/todos/1") },
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
                 )
@@ -187,7 +211,7 @@ fun CallTab() {
                     scope.launch {
                         try {
                             visiblePreloader = !visiblePreloader
-                            apiResponse = ApiService().fetchData(url, method, attrs, bearer)
+                            apiResponse = ApiService().fetchData(uiState.url, method, attrs, bearer)
                         } finally {
                             visiblePreloader = !visiblePreloader
                         }
@@ -202,7 +226,10 @@ fun CallTab() {
 
 
                 Box {
-                    Button(onClick = { expandedEnvironment = !expandedEnvironment }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)) {
+                    Button(
+                        onClick = { expandedEnvironment = !expandedEnvironment },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+                    ) {
                         Text(environment)
                     }
                     DropdownMenu(
