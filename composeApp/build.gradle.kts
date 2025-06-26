@@ -10,6 +10,7 @@ plugins {
 
 kotlin {
     jvm("desktop")
+    jvmToolchain(21)
     
     sourceSets {
         val desktopMain by getting
@@ -25,6 +26,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.cio)
+            implementation("io.github.vooft:compose-treeview-core:0.2.1")
             implementation(libs.ktor.serialization.kotlinx.jsn)
             implementation(libs.ktor.client.content.negotiation)
         }

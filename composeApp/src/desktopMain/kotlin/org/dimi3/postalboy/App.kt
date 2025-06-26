@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -36,6 +38,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import io.github.vooft.compose.treeview.core.TreeView
+import io.github.vooft.compose.treeview.core.node.Branch
+import io.github.vooft.compose.treeview.core.node.Leaf
+import io.github.vooft.compose.treeview.core.tree.Tree
+
+@Composable
+fun TreeViewExample() {
+    // build tree structure
+    val tree = Tree<String> {
+        Branch("Mammalia") {
+            Branch("Carnivora") {
+                Branch("Canidae") {
+                    Branch("Canis") {
+                        Leaf("Wolf")
+                        Leaf("Dog")
+                    }
+                }
+                Branch("Felidae") {
+                    Branch("Felis") {
+                        Leaf("Cat")
+                    }
+                    Branch("Panthera") {
+                        Leaf("Lion")
+                    }
+                }
+            }
+        }
+    }
+
+    // render the tree
+    TreeView(tree)
+}
 
 @Composable
 @Preview
@@ -44,19 +78,24 @@ fun App() {
     var selectedTabIndex2 by remember { mutableStateOf(0) }
     var tabIndex2 by remember { mutableStateOf(0) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        TabRow(selectedTabIndex2) {
-            tabs.forEachIndexed { index, title ->
-                Tab(
-                    text = { Text(title, fontSize = 12.sp) },
-                    selected = tabIndex2 == index,
-                    onClick = { tabIndex2 = index; selectedTabIndex2 = index },
-                )
-            }
+    Row {
+        Box(modifier = Modifier.width(300.dp)) {
+            TreeViewExample()
         }
-        when (tabIndex2) {
-            0 -> CallTab()
-            1 -> CallTab()
+        Box(modifier = Modifier.fillMaxSize()) {
+            TabRow(selectedTabIndex2, backgroundColor = Color.White) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        text = { Text(title, fontSize = 12.sp) },
+                        selected = tabIndex2 == index,
+                        onClick = { tabIndex2 = index; selectedTabIndex2 = index },
+                    )
+                }
+            }
+            when (tabIndex2) {
+                0 -> CallTab()
+                1 -> CallTab()
+            }
         }
     }
 }
@@ -88,25 +127,10 @@ fun CallTab() {
         ) {
             Row(Modifier.fillMaxWidth().padding(2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                 Box {
-                    Button(onClick = { expandedEnvironment = !expandedEnvironment }) {
-                        Text(environment)
-                    }
-                    DropdownMenu(
-                        expanded = expandedEnvironment,
-                        onDismissRequest = { expandedEnvironment = false }
+                    Button(
+                        onClick = { expanded = !expanded },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
                     ) {
-                        DropdownMenuItem(
-                            content = { Text("No environment") },
-                            onClick = {
-                                environment = "No environment"
-                                expandedEnvironment = false
-                            }
-                        )
-                    }
-                }
-
-                Box {
-                    Button(onClick = { expanded = !expanded }) {
                         Text(method)
                     }
                     DropdownMenu(
@@ -168,16 +192,37 @@ fun CallTab() {
                             visiblePreloader = !visiblePreloader
                         }
                     }
-                }) {
-                    Text("Go")
+                }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)) {
+                    Text("Go", modifier = Modifier.alpha(if (visiblePreloader) 0f else 1f))
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.alpha(if (visiblePreloader) 1f else 0f)
+                    )
                 }
 
-                CircularProgressIndicator(modifier = Modifier.alpha(if (visiblePreloader) 1f else 0f))
+
+                Box {
+                    Button(onClick = { expandedEnvironment = !expandedEnvironment }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)) {
+                        Text(environment)
+                    }
+                    DropdownMenu(
+                        expanded = expandedEnvironment,
+                        onDismissRequest = { expandedEnvironment = false }
+                    ) {
+                        DropdownMenuItem(
+                            content = { Text("No environment") },
+                            onClick = {
+                                environment = "No environment"
+                                expandedEnvironment = false
+                            }
+                        )
+                    }
+                }
             }
 
             Row(modifier = Modifier.padding(2.dp)) {
                 Column {
-                    TabRow(selectedTabIndex) {
+                    TabRow(selectedTabIndex, backgroundColor = Color.White) {
                         tabs.forEachIndexed { index, title ->
                             Tab(
                                 text = { Text(title, fontSize = 12.sp) },
@@ -222,7 +267,7 @@ fun CallTab() {
 
             Row(modifier = Modifier.padding(2.dp).background(Color.White)) {
                 Column {
-                    TabRow(selectedResponseTabIndex, backgroundColor = MaterialTheme.colors.primaryVariant) {
+                    TabRow(selectedResponseTabIndex, backgroundColor = Color.White) {
                         responseTabs.forEachIndexed { index, title ->
                             Tab(
                                 text = { Text(title, fontSize = 12.sp) },
