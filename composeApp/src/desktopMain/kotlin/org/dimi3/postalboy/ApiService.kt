@@ -23,12 +23,22 @@ class ApiService {
         }
     }
 
-    suspend fun fetchData(url: String, method: String, attrs: String, bearer: String): ApiResponse {
-        val uri = parseUrl(url)
+    fun isValidUrl(url: String): Boolean {
+        val urlRegex = """^(https?|ftp)://[\w\-]+(\.[\w\-]+)+[/#?]?.*$""".toRegex()
+        return urlRegex.matches(url)
+    }
+
+    suspend fun fetchData(urlParameter: String, method: String, attrs: String, bearer: String): ApiResponse {
         var result: HttpResponse?
         val httpBuilder = HttpRequestBuilder()
 
-        httpBuilder.url.takeFrom(uri!!)
+        if (isValidUrl(urlParameter).not()) {
+            return ApiResponse.Initial
+        }
+
+        val uri = parseUrl(urlParameter) as Url
+
+        httpBuilder.url.takeFrom(urlParameter)
         httpBuilder.host = uri.host
         httpBuilder.method = HttpMethod.parse(method)
         httpBuilder.url.path(uri.fullPath)
