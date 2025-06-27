@@ -80,9 +80,18 @@ fun TreeViewExample() {
 @Composable
 @Preview
 fun App() {
-    val tabs = listOf("Tab", "+")
+    val tabs = remember { mutableStateListOf("Tab") }
     var selectedTabIndex2 by remember { mutableStateOf(0) }
-    var tabIndex2 by remember { mutableStateOf(0) }
+
+    val viewModels = remember {
+        mutableStateListOf<TabViewModel>().apply {
+            add(TabViewModel())
+        }
+    }
+
+    DisposableEffect(tabs.size) {
+        onDispose { }
+    }
 
     Row {
         Box(modifier = Modifier.width(300.dp)) {
@@ -93,25 +102,34 @@ fun App() {
                 tabs.forEachIndexed { index, title ->
                     Tab(
                         text = { Text(title, fontSize = 12.sp) },
-                        selected = tabIndex2 == index,
-                        onClick = { tabIndex2 = index; selectedTabIndex2 = index },
+                        selected = selectedTabIndex2 == index,
+                        onClick = { selectedTabIndex2 = index },
                     )
                 }
+                Tab(
+                    text = { Text("+", fontSize = 12.sp) },
+                    selected = false,
+                    onClick = {
+                        tabs.add("Tab")
+                        viewModels.add(TabViewModel())
+                        selectedTabIndex2 = tabs.size - 1
+                    }
+                )
             }
-            when (tabIndex2) {
-                0 -> CallTab()
-                1 -> CallTab()
-            }
+            CallTab(viewModel = viewModels[selectedTabIndex2])
         }
     }
 }
 
 data class TabUiState(
     val url: String = "",
+    val bearer: String = "",
+    val apiResponse: ApiResponse = ApiResponse.Initial,
 )
 
 class TabViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(TabUiState(url = "https://jsonplaceholder.typicode.com/todos/1"))
+    private val _uiState =
+        MutableStateFlow(TabUiState(url = "https://jsonplaceholder.typicode.com/todos/1", bearer = ""))
     val uiState: StateFlow<TabUiState> = _uiState.asStateFlow()
 
     fun updateUrl(value: String) {
@@ -121,15 +139,29 @@ class TabViewModel : ViewModel() {
             )
         }
     }
+
+    fun updateBearer(value: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                bearer = value,
+            )
+        }
+    }
+
+    fun updateApiResponse(value: ApiResponse) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                apiResponse = value,
+            )
+        }
+    }
 }
 
 @Composable
 fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
     MaterialTheme {
-        var apiResponse by remember { mutableStateOf(ApiResponse.Initial) }
         val scope = rememberCoroutineScope()
         var attrs by remember { mutableStateOf("") }
-        var bearer by remember { mutableStateOf("") }
         var expanded by remember { mutableStateOf(false) }
         var expandedEnvironment by remember { mutableStateOf(false) }
         var method by remember { mutableStateOf("GET") }
@@ -149,7 +181,11 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
             Modifier.fillMaxWidth().padding(0.dp, 40.dp, 0.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(Modifier.fillMaxWidth().padding(2.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth().padding(2.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Button(
                     onClick = { expanded = !expanded },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
@@ -209,7 +245,14 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
                     scope.launch {
                         try {
                             visiblePreloader = !visiblePreloader
-                            apiResponse = ApiService().fetchData(uiState.url, method, attrs, bearer)
+                            viewModel.updateApiResponse(
+                                ApiService().fetchData(
+                                    uiState.url,
+                                    method,
+                                    attrs,
+                                    uiState.bearer
+                                )
+                            )
                         } finally {
                             visiblePreloader = !visiblePreloader
                         }
@@ -254,8 +297,8 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
                     }
                     when (tabIndex) {
                         0 -> TextField(
-                            value = bearer,
-                            onValueChange = { bearer = it },
+                            value = uiState.bearer,
+                            onValueChange = { viewModel.updateBearer(it) },
                             label = { Text("Bearer") },
                             modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 100.dp)
                                 .padding(horizontal = 16.dp),
@@ -301,13 +344,13 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
                         0 -> Row(Modifier.border(1.dp, MaterialTheme.colors.primary).fillMaxSize().padding(16.dp)) {
                             Column {
                                 Row {
-                                    Text(text = "Status: " + apiResponse.status.toString(), fontSize = 12.sp)
+                                    Text(text = "Status: " + uiState.apiResponse.status.toString(), fontSize = 12.sp)
                                 }
                                 Row {
                                     Box(modifier = Modifier.fillMaxSize()) {
                                         SelectionContainer {
                                             Text(
-                                                text = apiResponse.body,
+                                                text = uiState.apiResponse.body,
                                                 modifier = Modifier.verticalScroll(scroll),
                                                 fontSize = 12.sp,
                                                 lineHeight = 15.sp
@@ -324,7 +367,7 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
                         }
 
                         1 -> Row {
-                            apiResponse.headers.forEach { (key, value) ->
+                            uiState.apiResponse.headers.forEach { (key, value) ->
                                 Text("$key: ${value.joinToString(", ")}", fontSize = 12.sp)
                             }
                         }
