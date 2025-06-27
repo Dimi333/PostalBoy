@@ -149,61 +149,59 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
             Modifier.fillMaxWidth().padding(0.dp, 40.dp, 0.dp, 0.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(Modifier.fillMaxWidth().padding(2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                Box {
-                    Button(
-                        onClick = { expanded = !expanded },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-                    ) {
-                        Text(method)
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            content = { Text("GET") },
-                            onClick = {
-                                method = "GET"
-                                expanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            content = { Text("POST") },
-                            onClick = {
-                                method = "POST"
-                                expanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            content = { Text("PUT") },
-                            onClick = {
-                                method = "PUT"
-                                expanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            content = { Text("DELETE") },
-                            onClick = {
-                                method = "DELETE"
-                                expanded = false
-                            }
-                        )
-                        DropdownMenuItem(
-                            content = { Text("PATCH") },
-                            onClick = {
-                                method = "PATCH"
-                                expanded = false
-                            }
-                        )
-                    }
+            Row(Modifier.fillMaxWidth().padding(2.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Button(
+                    onClick = { expanded = !expanded },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+                ) {
+                    Text(method)
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        content = { Text("GET") },
+                        onClick = {
+                            method = "GET"
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        content = { Text("POST") },
+                        onClick = {
+                            method = "POST"
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        content = { Text("PUT") },
+                        onClick = {
+                            method = "PUT"
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        content = { Text("DELETE") },
+                        onClick = {
+                            method = "DELETE"
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        content = { Text("PATCH") },
+                        onClick = {
+                            method = "PATCH"
+                            expanded = false
+                        }
+                    )
                 }
 
                 TextField(
                     modifier = Modifier.weight(1f),
                     value = uiState.url,
-                    onValueChange = { viewModel.updateUrl(it)},
-                    label = { Text("Host: https://jsonplaceholder.typicode.com/todos/1") },
+                    onValueChange = { viewModel.updateUrl(it) },
+//                    label = { Text("Host: https://jsonplaceholder.typicode.com/todos/1") },
                     textStyle = androidx.compose.ui.text.TextStyle(fontSize = 12.sp)
                 )
 
@@ -219,31 +217,27 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
                 }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)) {
                     Text("Go", modifier = Modifier.alpha(if (visiblePreloader) 0f else 1f))
                     CircularProgressIndicator(
-                        color = Color.White,
                         modifier = Modifier.alpha(if (visiblePreloader) 1f else 0f)
                     )
                 }
 
-
-                Box {
-                    Button(
-                        onClick = { expandedEnvironment = !expandedEnvironment },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-                    ) {
-                        Text(environment)
-                    }
-                    DropdownMenu(
-                        expanded = expandedEnvironment,
-                        onDismissRequest = { expandedEnvironment = false }
-                    ) {
-                        DropdownMenuItem(
-                            content = { Text("No environment") },
-                            onClick = {
-                                environment = "No environment"
-                                expandedEnvironment = false
-                            }
-                        )
-                    }
+                Button(
+                    onClick = { expandedEnvironment = !expandedEnvironment },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+                ) {
+                    Text(environment)
+                }
+                DropdownMenu(
+                    expanded = expandedEnvironment,
+                    onDismissRequest = { expandedEnvironment = false }
+                ) {
+                    DropdownMenuItem(
+                        content = { Text("No environment") },
+                        onClick = {
+                            environment = "No environment"
+                            expandedEnvironment = false
+                        }
+                    )
                 }
             }
 
