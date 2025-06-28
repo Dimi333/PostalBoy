@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
@@ -24,11 +25,15 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -101,7 +106,15 @@ fun App() {
             TabRow(selectedTabIndex2, backgroundColor = Color.White) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
-                        text = { Text(title, fontSize = 12.sp) },
+                        text = {
+                            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                                Text(title, fontSize = 12.sp)
+                                IconButton(
+                                    modifier = Modifier.size(16.dp).padding(0.dp),
+                                    content = { Icon(imageVector = Icons.Filled.Close, contentDescription = "Close") },
+                                    onClick = { tabs.removeAt(index) })
+                            }
+                        },
                         selected = selectedTabIndex2 == index,
                         onClick = { selectedTabIndex2 = index },
                     )

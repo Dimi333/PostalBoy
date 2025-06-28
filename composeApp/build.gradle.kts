@@ -30,6 +30,9 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.jsn)
             implementation(libs.ktor.client.content.negotiation)
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
+            implementation("org.jetbrains.compose.material:material-icons-extended:1.5.11")
+            implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.5.11")
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
