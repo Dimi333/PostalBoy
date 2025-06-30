@@ -277,23 +277,25 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
                     )
                 }
 
-                Button(
-                    onClick = { expandedEnvironment = !expandedEnvironment },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
-                ) {
-                    Text(environment)
-                }
-                DropdownMenu(
-                    expanded = expandedEnvironment,
-                    onDismissRequest = { expandedEnvironment = false }
-                ) {
-                    DropdownMenuItem(
-                        content = { Text("No environment") },
-                        onClick = {
-                            environment = "No environment"
-                            expandedEnvironment = false
-                        }
-                    )
+                Box {
+                    Button(
+                        onClick = { expandedEnvironment = !expandedEnvironment },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)
+                    ) {
+                        Text(environment)
+                    }
+                    DropdownMenu(
+                        expanded = expandedEnvironment,
+                        onDismissRequest = { expandedEnvironment = false }
+                    ) {
+                        DropdownMenuItem(
+                            content = { Text("No environment") },
+                            onClick = {
+                                environment = "No environment"
+                                expandedEnvironment = false
+                            }
+                        )
+                    }
                 }
             }
 
