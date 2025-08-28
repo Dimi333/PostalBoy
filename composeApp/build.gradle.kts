@@ -31,7 +31,11 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
             implementation("org.jetbrains.compose.material:material-icons-extended:1.5.11")
-            implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.5.11")
+            implementation("org.jetbrains.compose.material:material-icons-extended-desktop:1.5.1")
+            implementation(libs.exposed.core)
+            implementation(libs.exposed.jdbc)
+            implementation(libs.h2)
+            implementation("org.xerial:sqlite-jdbc:3.49.1.0")
 
         }
         desktopMain.dependencies {

@@ -53,6 +53,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.dimi3.postalboy.Tasks.url
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
+import org.jetbrains.exposed.v1.core.count
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.insert
+import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 @Composable
 fun TreeViewExample() {
@@ -85,6 +93,27 @@ fun TreeViewExample() {
 @Composable
 @Preview
 fun App() {
+    Database.connect("jdbc:sqlite:data.db", "org.sqlite.JDBC")
+
+    transaction {
+        addLogger(StdOutSqlLogger)
+        SchemaUtils.create(Tasks)
+
+//        val taskId = Tasks.insert {
+//            it[url] = "https://jsonplaceholder.typicode.com/todos/1"
+//        } get Tasks.id
+//
+//        val secondTaskId = Tasks.insert {
+//            it[url] = "https://jsonplaceholder.typicode.com/todos/2"
+//        } get Tasks.id
+//
+//        println("Inserted tasks: $taskId, $secondTaskId")
+//
+//        Tasks.select(Tasks.id.count()).forEach {
+//            println("Found row with count: ${it[Tasks.id.count()]}")
+//        }
+    }
+
     val tabs = remember { mutableStateListOf("Tab") }
     var selectedTabIndex2 by remember { mutableStateOf(0) }
 
