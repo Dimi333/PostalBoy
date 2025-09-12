@@ -45,50 +45,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import io.github.vooft.compose.treeview.core.TreeView
-import io.github.vooft.compose.treeview.core.node.Branch
-import io.github.vooft.compose.treeview.core.node.Leaf
-import io.github.vooft.compose.treeview.core.tree.Tree
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.dimi3.postalboy.Tasks.url
 import org.jetbrains.exposed.v1.core.StdOutSqlLogger
-import org.jetbrains.exposed.v1.core.count
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
-import org.jetbrains.exposed.v1.jdbc.insert
-import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-
-@Composable
-fun TreeViewExample() {
-    // build tree structure
-    val tree = Tree<String> {
-        Branch("Mammalia") {
-            Branch("Carnivora") {
-                Branch("Canidae") {
-                    Branch("Canis") {
-                        Leaf("Wolf")
-                        Leaf("Dog")
-                    }
-                }
-                Branch("Felidae") {
-                    Branch("Felis") {
-                        Leaf("Cat")
-                    }
-                    Branch("Panthera") {
-                        Leaf("Lion")
-                    }
-                }
-            }
-        }
-    }
-
-    // render the tree
-    TreeView(tree)
-}
 
 @Composable
 @Preview
@@ -131,6 +95,7 @@ fun App() {
         Box(modifier = Modifier.width(300.dp)) {
             TreeViewExample()
         }
+
         Box(modifier = Modifier.fillMaxSize()) {
             TabRow(selectedTabIndex2, backgroundColor = Color.White) {
                 tabs.forEachIndexed { index, title ->
@@ -148,6 +113,7 @@ fun App() {
                         onClick = { selectedTabIndex2 = index },
                     )
                 }
+
                 Tab(
                     text = { Text("+", fontSize = 12.sp) },
                     selected = false,
@@ -158,6 +124,7 @@ fun App() {
                     }
                 )
             }
+
             CallTab(viewModel = viewModels[selectedTabIndex2])
         }
     }
@@ -287,6 +254,7 @@ fun CallTab(viewModel: TabViewModel = viewModel { TabViewModel() }) {
                     scope.launch {
                         try {
                             visiblePreloader = !visiblePreloader
+
                             viewModel.updateApiResponse(
                                 ApiService().fetchData(
                                     uiState.url,
